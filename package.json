@@ -1,0 +1,22 @@
+{
+  "name": "@kiza/utils",
+  "version": "1.0.0",
+  "description": "General utilities for Node.js",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/K1Z4/Utils.git"
+  },
+  "author": "Kiza",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/K1Z4/Utils/issues"
+  },
+  "homepage": "https://github.com/K1Z4/Utils#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
