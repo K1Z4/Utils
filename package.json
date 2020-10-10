@@ -1,6 +1,6 @@
 {
   "name": "@kiza/utils",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "General utilities for Node.js",
   "main": "index.js",
   "scripts": {
@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/K1Z4/Utils#readme",
   "dependencies": {
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "uuid": "^8.3.1"
   }
 }

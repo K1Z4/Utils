@@ -3,5 +3,6 @@
 module.exports = {
     mysqlBase: require("./src/mysqlBase"),
     isProduction: require("./src/isProduction"),
-    connectionProvider: require("./src/connectionProvider")
+    connectionProvider: require("./src/connectionProvider"),
+    guid: require("./src/guid"),
 }
