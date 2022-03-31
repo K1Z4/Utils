@@ -3,7 +3,7 @@
 var config = null;
 var pool = null;
 
-const mysql = require('mysql');
+const mysql = require('mysql2');
 
 module.exports = class {
     static setConfig(databaseConfig) {
