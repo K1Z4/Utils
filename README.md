@@ -59,4 +59,11 @@ module.exports = class extends mysqlBase {
     }
 }
 ```
- 
+
+## Publish package
+
+Note to self
+
+```bash
+npm publish --access public
+```
