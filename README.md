@@ -1,5 +1,9 @@
 # Utils
-General utilities for Node.js
+Mostly mysql utilities for Node.js
+
+```bash
+npm install @kiza/utils
+```
 
 ## Setup connection string
 
