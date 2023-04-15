@@ -1,19 +1,21 @@
-"use strict";
+import { getPool } from "./connectionProvider.js";
+import util from "util";
 
-const connection = require("./connectionProvider")
-const util = require("util")
+export default class {
 
-class mysqlBase {
     /**
      * Probably don't use this...
      */
-    static query(sqlString, params, con = connection.pool) {
-        if (typeof(sqlString) !== 'string') throw new Error("sqlString must be a string");
-        if (!typeof params == 'object') throw new Error("params must be an array");
+    static query(sqlString, params, con = getPool()) {
+        if (typeof (sqlString) !== 'string') throw new Error("sqlString must be a string");
+        if (!typeof params == 'object') throw new Error("params must be an object");
 
         return new Promise((resolve, reject) => {
             con.query(sqlString, params, (error, results, fields) => {
-                if (error) return reject(error);
+                if (error) {
+                    return reject(error);
+                }
+
                 resolve(results, fields);
             });
         });
@@ -96,12 +98,13 @@ class mysqlBase {
      *     Ensure to use this connection for any queries within the function for them to be executed within the transaction.
      * @returns {any} The result of the passed func
      */
-    static async inTransacation(func) {
-        if (typeof(func) !== "function") {
+    static async inTransaction(func) {
+        if (typeof (func) !== "function") {
             throw new TypeError(`func is not a function`);
         }
 
-        const getConnection = util.promisify(connection.pool.getConnection).bind(connection.pool);
+        const pool = getPool();
+        const getConnection = util.promisify(pool.getConnection).bind(pool);
         const con = await getConnection();
 
         try {
@@ -116,9 +119,7 @@ class mysqlBase {
                 await commit();
                 return result;
             } catch (err) {
-                //logger.warn(`rolling back transaction`)
                 await rollback();
-                //logger.warn(`transaction rolled back`)
                 throw err;
             }
         } finally {
@@ -126,5 +127,3 @@ class mysqlBase {
         }
     }
 }
-
-module.exports = mysqlBase;

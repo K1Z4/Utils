@@ -1,8 +1,6 @@
-"use strict";
+import mysqlBase from "./src/mysqlBase.js";
+import isProduction from "./src/isProduction.js";
+import * as connectionProvider from "./src/connectionProvider.js";
+import * as guid from "./src/guid.js";
 
-module.exports = {
-    mysqlBase: require("./src/mysqlBase"),
-    isProduction: require("./src/isProduction"),
-    connectionProvider: require("./src/connectionProvider"),
-    guid: require("./src/guid"),
-}
+export { mysqlBase, isProduction, connectionProvider, guid };

@@ -1,8 +1,9 @@
 {
   "name": "@kiza/utils",
-  "version": "1.2.0",
+  "version": "2.0.2",
   "description": "General utilities for Node.js",
   "main": "index.js",
+  "type": "module",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -17,7 +18,7 @@
   },
   "homepage": "https://github.com/K1Z4/Utils#readme",
   "dependencies": {
-    "mysql2": "^2.3.3",
-    "uuid": "^8.3.2"
+    "mysql2": "^3.2.1",
+    "uuid": "^9.0.0"
   }
 }

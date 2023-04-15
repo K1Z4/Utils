@@ -1,8 +1,5 @@
-"use strict";
-const { v4: uuidv4 } = require('uuid');
+import { v4 as uuidv4 } from 'uuid';
 
-module.exports = class {
-    static newGuid() {
-        return uuidv4();
-    }
-};
+export default function newGuid() {
+  return uuidv4();
+}
