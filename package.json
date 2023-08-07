@@ -1,6 +1,6 @@
 {
   "name": "@kiza/utils",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "General utilities for Node.js",
   "main": "index.js",
   "type": "module",
