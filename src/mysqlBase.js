@@ -1,24 +1,9 @@
 import { getPool } from "./connectionProvider.js";
-import util from "util";
 
 export default class {
 
-    /**
-     * Probably don't use this...
-     */
-    static query(sqlString, params, con = getPool()) {
-        if (typeof (sqlString) !== 'string') throw new Error("sqlString must be a string");
-        if (!typeof params == 'object') throw new Error("params must be an object");
-
-        return new Promise((resolve, reject) => {
-            con.query(sqlString, params, (error, results, fields) => {
-                if (error) {
-                    return reject(error);
-                }
-
-                resolve(results, fields);
-            });
-        });
+    static query(sqlString, params, pool = getPool()) {
+        return pool.query(sqlString, params).then(([rows, fields]) => rows)
     }
 
     /**
@@ -30,12 +15,12 @@ export default class {
      * @returns {object} The single result that was returned
      */
     static single(sqlString, params, con) {
-        return this.query.apply(this, arguments).then(e => {
-            if (e.length === 1) {
-                return e[0];
+        return this.query.apply(this, arguments).then(rows => {
+            if (rows.length === 1) {
+                return rows[0];
             }
 
-            throw new Error("Query returned more than one result");
+            throw new Error(`Query returned ${rows.length} results`);
         });
     }
 
@@ -48,7 +33,7 @@ export default class {
      * @returns {boolean} Any results
      */
     static any(sqlString, params, con) {
-        return this.query.apply(this, arguments).then(e => e.length > 0);
+        return this.query.apply(this, arguments).then(rows => rows.length > 0);
     }
 
     /**
@@ -60,7 +45,7 @@ export default class {
      * @returns {object} The first result
      */
     static first(sqlString, params, con) {
-        return this.query.apply(this, arguments).then(e => e[0] || null);
+        return this.query.apply(this, arguments).then(rows=> rows[0] || null);
     }
 
     /**
@@ -84,7 +69,14 @@ export default class {
      * @returns {number} The insert Id
      */
     static insert(sqlString, params, con) {
-        return this.query.apply(this, arguments).then(e => e.insertId);
+        return this.query.apply(this, arguments)
+            .then(rows => {
+            if (typeof rows !== "object") {
+                throw new Error(`Rows was not ResultSetHeader. Your query probably didn't insert anything`);
+            }
+
+            return rows.insertId;
+        });
     }
 
     /**
@@ -104,26 +96,21 @@ export default class {
         }
 
         const pool = getPool();
-        const getConnection = util.promisify(pool.getConnection).bind(pool);
-        const con = await getConnection();
+        const con = await pool.getConnection();
 
         try {
-            const commit = util.promisify(con.commit).bind(con);
-            const rollback = util.promisify(con.rollback).bind(con);
-            const beginTransaction = util.promisify(con.beginTransaction).bind(con);
-
-            await beginTransaction();
+            await con.beginTransaction();
 
             try {
                 const result = await func(con);
-                await commit();
+                await con.commit();
                 return result;
             } catch (err) {
-                await rollback();
+                await con.rollback();
                 throw err;
             }
         } finally {
-            con.release();
+            await con.release();
         }
     }
 }

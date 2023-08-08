@@ -1,20 +1,20 @@
 let config = null;
 let pool = null;
 
-import mysql from 'mysql2';
+import mysql from 'mysql2/promise';
 
-export function setConfig(databaseConfig) {
+export async function setConfig(databaseConfig) {
     if (pool) {
         throw new Error("A config has already been set");
     }
     config = databaseConfig;
-    pool = mysql.createPool(config);
+    pool = await mysql.createPool(config);
 }
 
 export function getPool() {
     if (!pool) {
         throw new Error(
-            "No pool as been setup. Ensure connectionProvider.setConfig(config) is called on startup"
+            "No pool as been setup. Ensure 'await connectionProvider.setConfig(config)' is called on startup"
         );
     }
 
@@ -24,7 +24,7 @@ export function getPool() {
 export function getConfig() {
     if (!config) {
         throw new Error(
-            "No config as been defined. Ensure connectionProvider.setConfig(config) is called on startup"
+            "No config as been defined. Ensure 'await connectionProvider.setConfig(config)' is called on startup"
         );
     }
 

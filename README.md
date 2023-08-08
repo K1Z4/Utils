@@ -12,7 +12,7 @@ Run once on startup:
 ```js
 const { connectionProvider } = require("@kiza/utils");
 const config = require("config");
-connectionProvider.setConfig(config.database);
+await connectionProvider.setConfig(config.database);
 ```
 
 Where `config.database` is the object which will be passed to `mysql2.createConnection`
@@ -32,6 +32,8 @@ Example of config:
 ```
 
 ## Use mysqlBase
+
+See example in testApp.js
 
 Create your repositories like:
 
