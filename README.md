@@ -69,3 +69,13 @@ Note to self
 ```bash
 npm publish --access public
 ```
+
+## Change log
+
+### v4
+
+- BIT maps to boolean automatically
+
+### v3 
+
+- moved es6 imports

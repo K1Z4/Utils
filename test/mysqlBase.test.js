@@ -21,8 +21,8 @@ class FriendRepository extends mysqlBase {
         return this.query("DELETE FROM friend");
     }
 
-    static insertFriend(name) {
-        return this.insert("INSERT INTO friend SET ?", [{ name }]);
+    static insertFriend(friend) {
+        return this.insert("INSERT INTO friend SET ?", [friend]);
     }
 
     static updateFriend(id, name) {
@@ -51,14 +51,15 @@ console.log("Running tests...")
 
 await FriendRepository.deleteAllFriends();
 const firstFriendName = "test";
-const friendId = await FriendRepository.insertFriend(firstFriendName);
+const friendId = await FriendRepository.insertFriend({ name: firstFriendName, isArchived: true });
 assert.strictEqual(typeof friendId, "number");
 console.log("Added friend with id", friendId);
 
-await FriendRepository.insertFriend("Jake");
+await FriendRepository.insertFriend({ name: "Jake", isArchived: false });
 
 const firstFriend = await FriendRepository.getFriend(friendId);
 assert.strictEqual(firstFriend.name, firstFriendName);
+assert.strictEqual(firstFriend.isArchived, true);
 console.log("Got first friend", firstFriend);
 
 const friends = await FriendRepository.getFriends();
