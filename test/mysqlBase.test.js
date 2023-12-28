@@ -1,6 +1,7 @@
 import { setConfig } from "../src/connectionProvider.js";
 import mysqlBase from "../src/mysqlBase.js";
 import assert from 'node:assert/strict';
+import test from 'node:test';
 
 await setConfig({
     "host": "localhost",
@@ -46,36 +47,52 @@ class FriendRepository extends mysqlBase {
     }
 }
 
-console.log("Running tests...")
+test('Insert and retrieve friend', async (t) => {
+    await FriendRepository.deleteAllFriends();
+    const name = "test";
+    const friendId = await FriendRepository.insertFriend({ name: name, isArchived: true });
+    assert.strictEqual(typeof friendId, "number");
 
+    const friend = await FriendRepository.getFriend(friendId);
+    assert.strictEqual(friend.name, name);
+    assert.strictEqual(friend.isArchived, true);
+});
 
-await FriendRepository.deleteAllFriends();
-const firstFriendName = "test";
-const friendId = await FriendRepository.insertFriend({ name: firstFriendName, isArchived: true });
-assert.strictEqual(typeof friendId, "number");
-console.log("Added friend with id", friendId);
+test('Retrieve all friends', async (t) => {
+    await FriendRepository.deleteAllFriends();
+    await FriendRepository.insertFriend({ name: "test", isArchived: true });
+    await FriendRepository.insertFriend({ name: "Jake", isArchived: false });
 
-await FriendRepository.insertFriend({ name: "Jake", isArchived: false });
+    const friends = await FriendRepository.getFriends();
+    assert.strictEqual(friends.length, 2);
+});
 
-const firstFriend = await FriendRepository.getFriend(friendId);
-assert.strictEqual(firstFriend.name, firstFriendName);
-assert.strictEqual(firstFriend.isArchived, true);
-console.log("Got first friend", firstFriend);
+test('Update friend', async (t) => {
+    await FriendRepository.deleteAllFriends();
+    const firstFriendName = "test";
+    const friendId = await FriendRepository.insertFriend({ name: firstFriendName, isArchived: true });
+    const updatedName = "test2";
+    await FriendRepository.updateFriend(friendId, updatedName);
+    const updatedFriend = await FriendRepository.getFriend(friendId);
+    assert.strictEqual(updatedFriend.name, updatedName);
+});
 
-const friends = await FriendRepository.getFriends();
-assert.strictEqual(friends.length, 2);
-console.log(`Got ${friends.length} friends`, friends);
+test('Add friends in transaction', async (t) => {
+    await FriendRepository.deleteAllFriends();
+    await FriendRepository.addFriends([{ name: "test3" }, { name: "test4" }]);
+    assert.strictEqual((await FriendRepository.getFriends()).length, 2);
+});
 
-const updatedName = "test2";
-await FriendRepository.updateFriend(friendId, updatedName);
-const updatedFriend = await FriendRepository.getFriend(friendId);
-assert.strictEqual(updatedFriend.name, updatedName);
+test('Rollback transaction on error', async (t) => {
+    await FriendRepository.deleteAllFriends();
+    await FriendRepository.addFriends([{ name: "test3" }, { name: "test4", invalid: "invalid" }]).catch(() => { });
+    assert.strictEqual((await FriendRepository.getFriends()).length, 0, "Transaction should have been rolled back");
+});
 
-await FriendRepository.addFriends([{ name: "test3" }, { name: "test4" }]);
-assert.strictEqual((await FriendRepository.getFriends()).length, 4);
+test('null BIT field remains null', async (t) => {
+    const friendId = await FriendRepository.insertFriend({ name: "friend", isArchived: null });
+    const friend = await FriendRepository.getFriend(friendId);
+    await FriendRepository.deleteFriend(friendId);
 
-await FriendRepository.addFriends([{ name: "test3" }, { name: "test4", invalid: "invalid" }]).catch(() => { });
-assert.strictEqual((await FriendRepository.getFriends()).length, 4, "Transaction should have been rolled back");
-
-
-console.log("All tests passed!")
+    assert.strictEqual(friend.isArchived, null);
+});

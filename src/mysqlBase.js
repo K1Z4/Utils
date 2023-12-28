@@ -10,7 +10,6 @@ export default class {
 
             const bitFields = new Map();
             for (const field of fields) {
-                // console.log("field", field, typeof field.columnType, field.columnType, field.type === 'BIT', field.type === 'bit', Object.keys(field));
                 // 16 === BIT
                 if (field.type === 16) {
                     bitFields.set(field.name, true);
@@ -21,9 +20,9 @@ export default class {
             if (bitFields.size > 0) {
                 for (const row of rows) {
                     for (const [fieldName, _] of bitFields) {
-                        // console.log("converting", row[fieldName], row[fieldName][0] === 1, 
-                        //     row[fieldName].lastIndexOf(1) !== -1)
-                        row[fieldName] = row[fieldName][0] === 1;
+                        if (row[fieldName] !== null) {
+                            row[fieldName] = row[fieldName][0] === 1;
+                        }
                     }
                 }
             }
