@@ -10,12 +10,13 @@ npm install @kiza/utils
 Run once on startup:
 
 ```js
-const { connectionProvider } = require("@kiza/utils");
-const config = require("config");
-await connectionProvider.setConfig(config.database);
-```
+import { poolProvider } from "@kiza/utils";
+import mysql from 'mysql2/promise';
+import config from "config";
 
-Where `config.database` is the object which will be passed to `mysql2.createConnection`
+const pool = await mysql.createPool(config.database);
+await poolProvider.setPool(pool);
+```
 
 Example of config: 
 
@@ -38,9 +39,9 @@ See example in testApp.js
 Create your repositories like:
 
 ```js
-const { mysqlBase } = require("@kiza/utils")
+import { mysqlBase } from "@kiza/utils";
 
-module.exports = class extends mysqlBase {
+export default class extends mysqlBase {
     static getJobs(siteId) {
         return this.all("SELECT * FROM job WHERE siteId = ? ORDER BY posted DESC", [siteId]);
     }
@@ -50,9 +51,9 @@ module.exports = class extends mysqlBase {
 Transactions:
 
 ```js
-const { mysqlBase } = require("@kiza/utils")
+import { mysqlBase } from "@kiza/utils";
 
-module.exports = class extends mysqlBase {
+export default class extends mysqlBase {
     static addJobs(job, job2) {
         return this.inTransacation(async con => {
             await this.insert("INSERT INTO job SET ?", job, con);
@@ -71,6 +72,11 @@ npm publish --access public
 ```
 
 ## Change log
+
+### v5
+
+- Remove dep on mysql2 package, pool should be provided by consumer. This lets the consumer manage the mysql version
+- Remove guid util. node:crypto should be used instead
 
 ### v4
 
