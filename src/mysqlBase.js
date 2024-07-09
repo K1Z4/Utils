@@ -1,4 +1,4 @@
-import { getPool } from "./connectionProvider.js";
+import { getPool } from "./poolProvider.js";
 
 export default class {
 

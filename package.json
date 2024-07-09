@@ -1,11 +1,12 @@
 {
   "name": "@kiza/utils",
-  "version": "4.0.1",
-  "description": "General utilities for Node.js",
+  "version": "5.0.0",
+  "description": "Mysql utilities for Node.js",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "test": "node test/mysqlBase.test.js"
+    "test": "node test/mysqlBase.test.js",
+    "publish": "npm publish --access public"
   },
   "repository": {
     "type": "git",
@@ -17,8 +18,7 @@
     "url": "https://github.com/K1Z4/Utils/issues"
   },
   "homepage": "https://github.com/K1Z4/Utils#readme",
-  "dependencies": {
-    "mysql2": "^3.6.0",
-    "uuid": "^9.0.0"
+  "devDependencies": {
+    "mysql2": "^3.10.2"
   }
 }
