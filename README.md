@@ -14,8 +14,7 @@ import { poolProvider } from "@kiza/utils";
 import mysql from 'mysql2/promise';
 import config from "config";
 
-const pool = await mysql.createPool(config.database);
-await poolProvider.setPool(pool);
+await poolProvider.setPool(() => mysql.createPool(config.database));
 ```
 
 Example of config: 

@@ -1,21 +1,17 @@
 import { setPool } from "../src/poolProvider.js";
 import mysqlBase from "../src/mysqlBase.js";
 import assert from 'node:assert/strict';
+import mysql from 'mysql2/promise';
 import test from 'node:test';
 
-import mysql from 'mysql2/promise';
-
-const pool = await mysql.createPool({
+await setPool(() => mysql.createPool({
     "host": "localhost",
     "user": "root",
     "password": "Miseequuel69",
     "database": "test",
     "dateStrings": true,
     "port": 3306
-})
-
-await setPool(pool);
-
+}));
 
 class FriendRepository extends mysqlBase {
     static getFriends() {

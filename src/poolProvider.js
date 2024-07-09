@@ -1,11 +1,11 @@
 let pool = null;
 
-export function setPool(newPool) {
+export async function setPool(func) {
     if (pool) {
         throw new Error("A pool has already been set");
     }
 
-    pool = newPool;
+    pool = await func();
 }
 
 export function getPool() {
