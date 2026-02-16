@@ -1,4 +1,4 @@
-import { getPool } from "./poolProvider.js";
+import { getPool, setPool } from "./poolProvider.js";
 
 export default class {
 
@@ -137,5 +137,9 @@ export default class {
         } finally {
             await con.release();
         }
+    }
+
+    static async setPool(func) {
+        return setPool(func);
     }
 }
