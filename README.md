@@ -64,9 +64,10 @@ export default class extends mysqlBase {
 
 ## Publish package
 
-Note to self
+Ensure to bump version in package.json
 
 ```bash
+npm login
 npm publish --access public
 ```
 
